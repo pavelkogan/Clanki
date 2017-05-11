@@ -1,4 +1,4 @@
-module Card where 
+module Card where
 import Display
 import Text.Printf(printf)
 import Data.List(nub, intercalate)
@@ -20,7 +20,7 @@ printCard :: Card -> IO ()
 printCard card = printf $ "Q : " ++ cardQuestion card ++ "\n" ++ "A : " ++ cardAnswer card
 
 allDeckNames :: [Card] -> [String]
-allDeckNames cards = nub . map cardDeck $ cards
+allDeckNames = nub . map cardDeck
 
 cardsInDeck :: String -> [Card] -> [Card]
 cardsInDeck deckName = filter ((== deckName) . cardDeck)
@@ -31,7 +31,7 @@ replaceCardsInDeck deckName newCards allCards = do
     cardsOldDeckRemoved ++ newCards
 
 displayCardsInDeck :: String -> [Card] -> String
-displayCardsInDeck deckName cards = 
+displayCardsInDeck deckName cards =
     prependDeckName . appendNewLine . displayListCards $ deckCards
     where
         prependDeckName = (deckName ++) . ("\n" ++)
@@ -39,12 +39,12 @@ displayCardsInDeck deckName cards =
         deckCards = filter (\card -> cardDeck card == deckName) cards
 
 displayListCards :: [Card] -> String
-displayListCards cards = intercalate "\n" . map display $ cards
+displayListCards = intercalate "\n" . map display
 
 displayAllDecks :: [Card] -> IO ()
 displayAllDecks cards = do
     let deckNames = allDeckNames cards
-    let cardsDisplayed = intercalate "\n" $ map (\dName -> displayCardsInDeck dName cards) deckNames
+    let cardsDisplayed = intercalate "\n" $ map (`displayCardsInDeck` cards) deckNames
     printf $ cardsDisplayed ++ "\n"
 
 hasDeckNamed :: String -> [Card] -> Bool

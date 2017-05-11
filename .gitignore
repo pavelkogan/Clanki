@@ -5,4 +5,5 @@ tags
 dist/
 .cabal-sandbox
 cabal.sandbox.config
+*.cabal
 

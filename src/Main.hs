@@ -17,7 +17,7 @@ import qualified System.IO.Strict as SIO
 data Action = Quiz | Add | Remove | Show | Quit deriving (Show, Eq, Ord, Enum)
 
 instance Display Action where
-    display = show 
+    display = show
 
 allActions :: [Action]
 allActions = [Quiz ..]
@@ -66,7 +66,7 @@ saveData decks = writeFile fileName (show decks)
 startWithArgs :: [String] -> [Card] -> IO [Card]
 startWithArgs args cards
     | null args = return cards
-    | "--help" `elem` args || "-h" `elem` args = 
+    | "--help" `elem` args || "-h" `elem` args =
         do
             displayHelp
             return cards
@@ -74,14 +74,10 @@ startWithArgs args cards
         do
             displayAllDecks cards
             return cards
-    {-| "--stats" `elem` args || "-s" `elem` args =-}
-        {-do-}
-            {-displayList decks-}
-            {-return decks-}
     | firstOptionIsNum = do
         let numOfCardsToQuiz = read (head args) :: Int
         quizSomeCards (take numOfCardsToQuiz cards) cards
-    | firstOptionIsDeck = 
+    | firstOptionIsDeck =
         if secondOptionIsNum
             then do
                 let numOfCardsToQuiz = read $ args !! 1
@@ -119,5 +115,3 @@ main = do
     args <- getArgs
     newCards <- startWithArgs args cards
     mainLoop newCards
-
-    

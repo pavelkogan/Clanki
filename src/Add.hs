@@ -26,13 +26,13 @@ runAddAction Nothing        cards = return cards
 newDeck :: [Card] -> IO [Card]
 newDeck cards = do
     deckName <- Input.sameLinePrompt "New deck name : "
-    case deckName of 
+    case deckName of
         "" -> return cards
         _  -> if any (\card -> cardDeck card == deckName) cards
                 then do
                     printf $ "Invalid input, already a deck with that name" ++ "\n"
                     newDeck cards
-                else 
+                else
                     toDeckLoop deckName cards
 
 toDeck :: [Card] -> IO [Card]
@@ -46,7 +46,7 @@ toDeck cards = do
 toDeckLoop :: String -> [Card] -> IO [Card]
 toDeckLoop deckName cards = do
     question <- Input.sameLinePrompt "Add question : "
-    case question of 
+    case question of
         "" -> do
                 {-printf $ "You wish to stop adding" ++ "\n"-}
                 printf "\n"

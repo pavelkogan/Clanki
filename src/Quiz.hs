@@ -8,9 +8,9 @@ import Safe(readMay)
 import Data.Time.Clock.POSIX
 import Data.Maybe(isJust)
 import qualified Input
-import Control.Monad(filterM, liftM)
+import Control.Monad(filterM)
 import System.IO(hSetBuffering, BufferMode(NoBuffering, LineBuffering), stdin, stdout, hFlush)
-import Data.List((\\), isInfixOf, delete)
+import Data.List(delete)
 data QuizAction = AllCards | FromDeck deriving (Show, Eq)
 
 allQuizActions :: [QuizAction]
@@ -25,12 +25,12 @@ quizLoop cards = do
     quizAction <- getQuizAction cards
     runQuizAction quizAction cards
 
-anyCardsToQuiz :: [Card] -> IO Bool
-anyCardsToQuiz cards = liftM (True `elem`) shouldQuizList
-    where shouldQuizList = sequence $ fmap shouldQuizCard cards
+-- anyCardsToQuiz :: [Card] -> IO Bool
+-- anyCardsToQuiz cards = liftM (True `elem`) shouldQuizList
+--     where shouldQuizList = sequence $ fmap shouldQuizCard cards
 
 runQuizAction :: Maybe QuizAction -> [Card] -> IO [Card]
-runQuizAction (Just AllCards) cards = cardsToQuiz cards >>= (\someCards -> quizSomeCards someCards cards)
+runQuizAction (Just AllCards) cards = cardsToQuiz cards >>= (`quizSomeCards` cards)
 runQuizAction (Just FromDeck) cards = do
         input <- Input.getUserChoiceStr $ allDeckNames cards
         case input of
@@ -48,7 +48,7 @@ quizCards cards = quizSomeCards cards cards
 quizSomeCards :: [Card] -> [Card] -> IO [Card]
 quizSomeCards subset set = do
     printf "Press <Enter> at any time to stop quizzing\n"
-    quizSomeCards' subset set 
+    quizSomeCards' subset set
     where
     quizSomeCards' cards allCards
         | null cards = return allCards
@@ -61,7 +61,7 @@ quizSomeCards subset set = do
                 if needsRequizzing
                     then quizSomeCards' (restOfCards ++ [updatedCard]) allCards
                     else do
-                        let newAllCards = (updatedCard:) . delete headCard $ allCards 
+                        let newAllCards = (updatedCard:) . delete headCard $ allCards
                         quizSomeCards' restOfCards newAllCards
         where
         headCard = head cards
@@ -83,7 +83,7 @@ quizCard card = do
             let newST = updateStatTracker st conf
             let newTracker = oldTracker {ctEF = newEF, ctN = n, ctLastResponseQuality = Just conf, ctTimeQuizzed = currentTime}
             return . Just $ card {cardTracker = newTracker, cardStatTracker = newST}
-        Nothing   -> return Nothing 
+        Nothing   -> return Nothing
 
 getConfidence :: String -> String -> IO (Maybe Int)
 getConfidence answer correctAnswer
@@ -107,7 +107,7 @@ promptConfidence :: IO (Maybe Int)
 promptConfidence = do
     hSetBuffering stdin NoBuffering
     hSetBuffering stdout NoBuffering
-    input <- fmap (:[]) getChar 
+    input <- fmap (:[]) getChar
     let readInput = readMay input :: Maybe Int
     hSetBuffering stdin LineBuffering
     hSetBuffering stdout LineBuffering
@@ -130,7 +130,7 @@ getQuizAction cards = do
     cardsToBeQuizzed <- cardsToQuiz cards
     case cardsToBeQuizzed of
         [] -> do
-            printf $ "No cards need to be quizzed at this time" ++ "\n" 
+            printf $ "No cards need to be quizzed at this time" ++ "\n"
             return Nothing
         _  -> case allDeckNames cards of
                 [_] -> return $ Just AllCards

@@ -23,9 +23,9 @@ runRemoveAction Nothing cards               = return cards
 removeDeck :: [Card] -> IO [Card]
 removeDeck cards = do
     printf $ "Choose what deck to remove" ++ "\n"
-    
+
     input <- Input.getUserChoiceStr $ allDeckNames cards
-    case input of 
+    case input of
         Just deckName -> return $ filter (\card -> cardDeck card /= deckName) cards
         Nothing   -> return cards
 
@@ -37,20 +37,20 @@ removeFromDeck cards = do
         Just deckName -> do
                         updatedCards <- removeFromDeckLoop deckName (cardsInDeck deckName cards)
                         let newCards = replaceCardsInDeck deckName updatedCards cards
-                        return newCards 
+                        return newCards
         Nothing -> return cards
 
 removeFromDeckLoop :: String -> [Card] -> IO [Card]
 removeFromDeckLoop     _        [] = return []
 removeFromDeckLoop deckName cards = do
     input <- Input.getUserChoice cards
-    case input of 
+    case input of
         Just card  -> removeFromDeckLoop deckName $ delete card cards
         Nothing    -> return cards
 
 getRemoveAction :: [Card] -> IO (Maybe RemoveAction)
 getRemoveAction [] = return Nothing
-getRemoveAction decks = do
+getRemoveAction _ = do
         printf $ "What would you like to do?" ++ "\n"
         Input.getUserChoice allRemoveActions
 
