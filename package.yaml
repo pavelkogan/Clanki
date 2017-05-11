@@ -1,0 +1,24 @@
+name: clanki
+version: '1.2.6'
+synopsis: Command-line spaced-repetition software
+description: Command-line spaced-repetition learning software. CL (command line) +
+  Anki (popular spaced-repetition software) = Clanki. Usage is fairly simple, just
+  follow the instructions after running the program. Add a deck, add cards to the
+  deck, then quiz whenever possible. The program will determine what cards need to
+  be reviewed, using the Super Memo 2 algorithm.
+category: Education
+author: Marcus Buffett
+maintainer: marcusbuffett@me.com
+license: MIT
+dependencies:
+- base >=4.6
+- time >=1.4.2
+- directory >=1.2.1.0
+- safe
+- bytestring
+- strict
+executables:
+  clanki:
+    main: Main.hs
+    source-dirs: src
+    ghc-options: -Wall
