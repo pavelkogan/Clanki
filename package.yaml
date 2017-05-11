@@ -17,6 +17,8 @@ dependencies:
 - safe
 - bytestring
 - strict
+library:
+  source-dirs: src
 executables:
   clanki:
     main: Main.hs
